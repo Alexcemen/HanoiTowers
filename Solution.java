@@ -40,7 +40,51 @@ public class Solution extends Game {
         }
     }
 
+    public static void moving(Rack rackA, Rack rackB, Solution context) {
+        Ring ring = rackA.getRingList().getLast();
+        int oldMainY = ring.getMainY();
+        int newY = 20;
+
+        while (ring.getMainY() != newY) {
+            ring.setMainY(oldMainY - 1);
+            oldMainY -= 1;
+            context.updateScene();
+        }
+
+        int oldMainXA = ring.getMainX();
+        int mainXB = rackB.getMainY();
+        if (oldMainXA < mainXB) {
+            while (ring.getMainX() != mainXB) {
+                ring.setMainX(oldMainXA + 1);
+                oldMainXA++;
+                context.updateScene();
+            }
+        } else {
+            while (ring.getMainX() != mainXB) {
+                ring.setMainX(oldMainXA - 1);
+                oldMainXA--;
+                context.updateScene();
+            }
+        }
+
+        int mainYB;
+        if (rackB.getRingList().isEmpty()) {
+            mainYB = rackB.getMainX();
+        } else {
+            Ring ringB = rackB.getRingList().getLast();
+            mainYB = ringB.getMainY();
+        }
+
+        oldMainY = ring.getMainY();
+        while (ring.getMainY() != mainYB-2) {
+            ring.setMainY(oldMainY + 1);
+            oldMainY += 1;
+            context.updateScene();
+        }
+    }
+
     private void swap(Rack A, Rack B) {
+        moving(A, B, this);
         Ring tmp = A.getRingList().getLast();
         A.getRingList().removeLast();
         List<Ring> ringListB = B.getRingList();
@@ -64,7 +108,7 @@ public class Solution extends Game {
     private void drawScene() {
         for (int i = 0; i < gameField.length; i++) {
             for (int j = 0; j < gameField.length; j++) {
-                setCellColor(i, j, Color.AQUA);
+                setCellColor(i, j, Color.BLACK);
             }
         }
 
@@ -108,7 +152,7 @@ public class Solution extends Game {
     private void updateScene() {
         drawScene();
         try {
-            Thread.sleep(200);
+            Thread.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

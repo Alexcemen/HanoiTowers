@@ -30,6 +30,14 @@ public class Ring {
         this.ringCoordinates = createRingCoordinates();
     }
 
+    public int getMainX() {
+        return mainX;
+    }
+
+    public int getMainY() {
+        return mainY;
+    }
+
     public Color getColor() {
         return color;
     }
@@ -41,7 +49,7 @@ public class Ring {
             case 3 -> Color.YELLOW;
             case 4 -> Color.ORANGE;
             case 5 -> Color.RED;
-            default -> Color.BLACK;
+            default -> Color.PINK;
         };
     }
 
