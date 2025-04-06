@@ -17,7 +17,7 @@ public class Solution extends Game {
 
     @Override
     public void initialize() {
-        numRings = 5;
+        numRings = 6;
         setScreenSize(SIDE, SIDE);
         createGame();
         drawScene();
@@ -26,43 +26,28 @@ public class Solution extends Game {
     @Override
     public void onKeyPress(Key key) {
         if (key == Key.ENTER) {
-            move(rackA, rackB, rackC, numRings);
+            new Thread(() -> move(rackA, rackB, rackC, numRings)).start();
         }
     }
 
     public void move(Rack A, Rack B, Rack C, int numRings) {
         if (numRings > 1) {
             move(A, C, B, numRings - 1);
-            Ring tmp = A.getRingList().getLast();
-            A.getRingList().removeLast();
-            List<Ring> ringListB = B.getRingList();
-            ringListB.add(tmp);
-            B.setRingList(ringListB);
-
-            drawScene();
-            updateRingsCoordinates();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
+            swap(A, B);
             move(C, B, A, numRings - 1);
         } else {
-            Ring tmp = A.getRingList().getLast();
-            A.getRingList().removeLast();
-            List<Ring> ringListB = B.getRingList();
-            ringListB.add(tmp);
-            B.setRingList(ringListB);
-
-            drawScene();
-            updateRingsCoordinates();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            swap(A, B);
         }
+    }
+
+    private void swap(Rack A, Rack B) {
+        Ring tmp = A.getRingList().getLast();
+        A.getRingList().removeLast();
+        List<Ring> ringListB = B.getRingList();
+        ringListB.add(tmp);
+        B.setRingList(ringListB);
+        updateRingsCoordinates();
+        updateScene();
     }
 
 
@@ -95,10 +80,10 @@ public class Solution extends Game {
             }
         }
 
-        System.out.println("A: " + rackA.getRingList().toString());
-        System.out.println("B: " + rackB.getRingList().toString());
-        System.out.println("C: " + rackC.getRingList().toString());
-        System.out.println();
+//        System.out.println("A: " + rackA.getRingList().toString());
+//        System.out.println("B: " + rackB.getRingList().toString());
+//        System.out.println("C: " + rackC.getRingList().toString());
+//        System.out.println();
     }
 
     private void updateRingsCoordinates() {
@@ -118,5 +103,14 @@ public class Solution extends Game {
             tmp.add(ring);
         }
         rackA.setRingList(tmp);
+    }
+
+    private void updateScene() {
+        drawScene();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
